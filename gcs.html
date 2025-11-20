@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <title>傳說對決 GCS 例行賽排名分析 - 小律版</title>
+  <style>
+    :root {
+      --bg: #020617;
+      --bg-elevated: #020617;
+      --bg-page: #020617;
+      --border-subtle: #1f2937;
+      --accent: #3b82f6;
+      --accent-soft: rgba(59,130,246,0.12);
+      --text-main: #e5e7eb;
+      --text-muted: #9ca3af;
+      --danger: #f97373;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      margin: 0;
+      padding: 24px;
+      background: radial-gradient(circle at top, #0b1220 0, #020617 40%, #020617 100%);
+      color: var(--text-main);
+    }
+
+    .app-shell {
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    .topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+
+    .title-main {
+      font-size: 22px;
+      font-weight: 700;
+    }
+
+    .title-sub {
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 10px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.5);
+      font-size: 11px;
+      background: rgba(15,23,42,0.9);
+    }
+
+    .badge-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    .card {
+      background: rgba(2,6,23,0.98);
+      border-radius: 16px;
+      padding: 18px 18px 16px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.65);
+      border: 1px solid rgba(15,23,42,0.9);
+      margin-bottom: 18px;
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 10px;
+    }
+
+    h1 {
+      font-size: 18px;
+      margin: 0;
+    }
+
+    label {
+      font-size: 13px;
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text-muted);
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      background: #020617;
+      color: var(--text-main);
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      padding: 10px;
+      font-family: "JetBrains Mono", Menlo, Consolas, monospace;
+      font-size: 13px;
+      resize: vertical;
+      outline: none;
+    }
+
+    textarea:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent-soft);
+    }
+
+    input, select {
+      width: 100%;
+      background: #020617;
+      color: var(--text-main);
+      border-radius: 999px;
+      border: 1px solid var(--border-subtle);
+      padding: 7px 10px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    input::placeholder {
+      color: #6b7280;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 1px var(--accent-soft);
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+      margin-bottom: 4px;
+    }
+
+    .row > div {
+      flex: 1;
+      min-width: 160px;
+    }
+
+    button {
+      margin-top: 10px;
+      padding: 9px 18px;
+      border-radius: 999px;
+      border: none;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      background: var(--accent);
+      color: white;
+      transition: transform 0.05s ease, box-shadow 0.05s ease, background 0.1s ease;
+    }
+
+    button:hover {
+      background: #2563eb;
+      box-shadow: 0 10px 20px rgba(37,99,235,0.35);
+      transform: translateY(-1px);
+    }
+
+    button:active {
+      transform: translateY(0);
+      box-shadow: none;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: default;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
+
+    .error {
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--danger);
+    }
+
+    .status-bar {
+      font-size: 12px;
+      color: var(--text-muted);
+      margin-top: 6px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    pre {
+      background: #020617;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      padding: 10px;
+      white-space: pre-wrap;
+      max-height: 420px;
+      overflow: auto;
+      font-family: "JetBrains Mono", Menlo, Consolas, monospace;
+      font-size: 13px;
+      margin-top: 4px;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      margin-top: 4px;
+      overflow: hidden;
+      border-radius: 10px;
+      border: 1px solid var(--border-subtle);
+      background: #020617;
+    }
+
+    thead {
+      background: rgba(15,23,42,0.9);
+    }
+
+    th, td {
+      padding: 6px 8px;
+      text-align: center;
+      border-bottom: 1px solid #111827;
+    }
+
+    th {
+      font-weight: 600;
+      color: #9ca3af;
+      font-size: 12px;
+    }
+
+    tbody tr:nth-child(even) {
+      background: rgba(15,23,42,0.55);
+    }
+
+    tbody tr:hover {
+      background: rgba(31,41,55,0.8);
+    }
+
+    .team-name-cell {
+      text-align: left;
+      padding-left: 12px;
+    }
+
+    .tag {
+      display: inline-flex;
+      padding: 2px 7px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid #374151;
+      color: #9ca3af;
+      background: rgba(17,24,39,0.9);
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 14px;
+      }
+      .card {
+        padding: 14px;
+      }
+      .title-main {
+        font-size: 18px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="topbar">
+      <div>
+        <div class="title-main">傳說對決 GCS 例行賽排名分析程式</div>
+        <div class="title-sub">By 小律・完整枚舉所有未來賽果（BO5）</div>
+      </div>
+      <div class="badge">
+        <div class="badge-dot"></div>
+        <span>GCS 2025 Season Analyzer</span>
+      </div>
+    </div>
+
+    <!-- 輸入區 -->
+    <div class="card">
+      <div class="card-header">
+        <h1>資料輸入</h1>
+        <span class="tag">BO5・比分：3:0 / 3:1 / 3:2 / 2:3 / 1:3 / 0:3</span>
+      </div>
+
+      <div class="hint">
+        輸入格式：<br/>
+        已對戰：<code>HKA 3 1 BRO</code>　未對戰：<code>HKA 0 0 BRO</code>
+      </div>
+
+      <label for="input">請輸入目前例行賽所有對戰結果（每行一筆）：</label>
+      <textarea id="input" placeholder="例如：
+HKA 3 1 BRO
+DCG 0 0 ONE
+..."></textarea>
+
+      <div id="error" class="error" style="display:none;"></div>
+
+      <div class="row">
+        <div>
+          <label for="team">查詢隊伍（不查請留空）：</label>
+          <input id="team" type="text" placeholder="例如：HKA" />
+        </div>
+        <div>
+          <label for="query">查詢種類：</label>
+          <select id="query">
+            <option value="no">不查詢</option>
+            <option value="up4">會進季後賽的可能 (up4)</option>
+            <option value="up2">會進季後賽勝部的可能 (up2)</option>
+            <option value="no_up4">不會進季後賽的可能 (no_up4)</option>
+            <option value="no_up2">不會進季後賽勝部的可能 (no_up2)</option>
+          </select>
+        </div>
+      </div>
+
+      <button id="runBtn">開始計算</button>
+
+      <div class="status-bar">
+        <span>小提醒：未來 N 場比賽共有 6<sup>N</sup> 種可能，場次太多時結果會非常龐大。</span>
+        <span id="statusText"></span>
+      </div>
+    </div>
+
+    <!-- 目前排名表 -->
+    <div class="card">
+      <div class="card-header">
+        <h1>目前例行賽排名表</h1>
+        <span class="tag">依照大分 → 勝差 → 互相對戰小分</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>名次</th>
+            <th class="team-name-cell">隊伍</th>
+            <th>大分勝</th>
+            <th>大分敗</th>
+            <th>小分得</th>
+            <th>小分失</th>
+            <th>勝差</th>
+          </tr>
+        </thead>
+        <tbody id="rankTableBody">
+          <!-- JS 產生 -->
+        </tbody>
+      </table>
+      <div class="hint">請輸入上方對戰結果並按「開始計算」，這裡會顯示目前已完成比賽的排名。</div>
+    </div>
+
+    <!-- 所有情況輸出 -->
+    <div class="card">
+      <div class="card-header">
+        <h1>結果輸出</h1>
+        <span class="tag">列出每一種可能的未來賽果與最終排名（依查詢條件過濾）</span>
+      </div>
+      <pre id="output"></pre>
+    </div>
+  </div>
+
+  <script>
+    // ===== 資料結構 =====
+    class ST {
+      constructor(name) {
+        this.my_team = name;
+        this.mp = {};
+        this.big_win = 0;
+        this.big_lose = 0;
+        this.small_win = 0;
+        this.small_lose = 0;
+        this.dif = 0;
+        this.same = 0;
+        this.rank = 1;
+      }
+    }
+
+    function cloneTeamMap(teamMap) {
+      const newMap = new Map();
+      for (const [name, t] of teamMap.entries()) {
+        const nt = new ST(name);
+        const tmp = JSON.parse(JSON.stringify(t));
+        Object.assign(nt, tmp);
+        newMap.set(name, nt);
+      }
+      return newMap;
+    }
+
+    function record(teamMap, s, s2, a, b) {
+      if (!teamMap.has(s)) teamMap.set(s, new ST(s));
+      if (!teamMap.has(s2)) teamMap.set(s2, new ST(s2));
+      const t1 = teamMap.get(s);
+      const t2 = teamMap.get(s2);
+
+      t1.small_win += a;
+      t1.small_lose += b;
+      t2.small_win += b;
+      t2.small_lose += a;
+
+      t1.dif = t1.small_win - t1.small_lose;
+      t2.dif = t2.small_win - t2.small_lose;
+
+      if (!t1.mp[s2]) t1.mp[s2] = 0;
+      if (!t2.mp[s])  t2.mp[s]  = 0;
+      t1.mp[s2] += a;
+      t2.mp[s]  += b;
+
+      if (a > b) {
+        t1.big_win++;
+        t2.big_lose++;
+      } else if (a < b) {
+        t2.big_win++;
+        t1.big_lose++;
+      }
+    }
+
+    function cmp(a, b) {
+      if (a.big_win !== b.big_win) return b.big_win - a.big_win;
+      if (a.dif     !== b.dif)     return b.dif - a.dif;
+
+      const ab = a.mp[b.my_team] || 0;
+      const ba = b.mp[a.my_team] || 0;
+      if (ab !== ba) return ba - ab;
+
+      return a.my_team.localeCompare(b.my_team);
+    }
+
+    // 計算完整排名資訊
+    function buildRankList(teamMap) {
+      let v = Array.from(teamMap.values()).map(t => {
+        const nt = new ST(t.my_team);
+        Object.assign(nt, JSON.parse(JSON.stringify(t)));
+        return nt;
+      });
+
+      v.sort(cmp);
+
+      let group_id = 0;
+      for (let i = 0; i < v.length; i++) {
+        if (i === 0) {
+          v[i].same = ++group_id;
+        } else {
+          let same_group = true;
+          if (v[i].big_win !== v[i-1].big_win) same_group = false;
+          if (v[i].dif     !== v[i-1].dif)     same_group = false;
+          const ab = v[i].mp[v[i-1].my_team] || 0;
+          const ba = v[i-1].mp[v[i].my_team] || 0;
+          if (ab !== ba) same_group = false;
+
+          if (same_group) v[i].same = group_id;
+          else            v[i].same = ++group_id;
+        }
+      }
+
+      const rk = [];
+      for (let i = 0; i < v.length; i++) rk[i] = i + 1;
+      if (v.length > 0) v[0].rank = 1;
+      for (let i = 1; i < v.length; i++) {
+        if (v[i].same === v[i-1].same && v[i].same) rk[i] = rk[i-1];
+        v[i].rank = rk[i];
+      }
+      return v;
+    }
+
+    // 更新「目前排名表」
+    function renderCurrentTable(teamMap) {
+      const tbody = document.getElementById("rankTableBody");
+      tbody.innerHTML = "";
+      if (teamMap.size === 0) return;
+
+      const v = buildRankList(teamMap);
+      for (const row of v) {
+        const tr = document.createElement("tr");
+
+        const rankTd = document.createElement("td");
+        rankTd.textContent = row.rank;
+
+        const nameTd = document.createElement("td");
+        nameTd.textContent = row.my_team;
+        nameTd.className = "team-name-cell";
+
+        const bwTd = document.createElement("td");
+        bwTd.textContent = row.big_win;
+
+        const blTd = document.createElement("td");
+        blTd.textContent = row.big_lose;
+
+        const swTd = document.createElement("td");
+        swTd.textContent = row.small_win;
+
+        const slTd = document.createElement("td");
+        slTd.textContent = row.small_lose;
+
+        const difTd = document.createElement("td");
+        difTd.textContent = row.dif;
+
+        tr.append(rankTd, nameTd, bwTd, blTd, swTd, slTd, difTd);
+        tbody.appendChild(tr);
+      }
+    }
+
+    // 根據查詢條件決定是否印出這一種情境
+    function print(teamMap, possible, find_team, flags, state) {
+      const { up2, up4, no_up4, no_up2 } = flags;
+      const v = buildRankList(teamMap);
+
+      let go_to_print = false;
+      if (find_team === "no" || !find_team) go_to_print = true;
+
+      if (up2) {
+        for (const i of v) {
+          if (i.my_team === find_team && i.rank <= 2) go_to_print = true;
+        }
+      }
+      if (up4) {
+        for (const i of v) {
+          if (i.my_team === find_team && i.rank <= 4) go_to_print = true;
+        }
+      }
+      if (no_up4) {
+        for (const i of v) {
+          if (i.my_team === find_team && i.rank >= 5) go_to_print = true;
+        }
+      }
+      if (no_up2) {
+        for (const i of v) {
+          if (i.my_team === find_team && i.rank >= 3) go_to_print = true;
+        }
+      }
+
+      // GCS 原程式：4 / 2 名邊界平手也算「可能」
+      if (no_up4) {
+        for (let i = 0; i < v.length; i++) {
+          if (v[i].my_team === find_team && i !== v.length - 1 &&
+              v[i].rank === 4 && v[i+1].rank === 4) go_to_print = true;
+        }
+        for (let i = 1; i < v.length; i++) {
+          if (v[i].my_team === find_team &&
+              v[i].rank === 4 && v[i-1].rank === 4) go_to_print = true;
+        }
+      }
+      if (no_up2) {
+        for (let i = 0; i < v.length; i++) {
+          if (v[i].my_team === find_team && i !== v.length - 1 &&
+              v[i].rank === 2 && v[i+1].rank === 2) go_to_print = true;
+        }
+        for (let i = 1; i < v.length; i++) {
+          if (v[i].my_team === find_team &&
+              v[i].rank === 2 && v[i-1].rank === 2) go_to_print = true;
+        }
+      }
+
+      if (go_to_print) {
+        state.check_find_out = true;
+        state.ans++;
+        if (possible.length > 0) {
+          state.out += possible.join("\n") + "\n";
+        }
+        state.out += "排名 隊伍 大分 敗 小分 敗 勝差\n";
+        for (const i of v) {
+          state.out += `${i.rank} ${i.my_team} ${i.big_win} ${i.big_lose} ${i.small_win} ${i.small_lose} ${i.dif}\n`;
+        }
+        state.out += "\n";
+      }
+    }
+
+    // DFS 枚舉每一場比賽的 6 種結果
+    function dfs(teamMap, games, now, possible, find_team, flags, state) {
+      if (now === games.length) {
+        print(teamMap, possible, find_team, flags, state);
+        return;
+      }
+
+      const [s, s2] = games[now];
+      const results = [
+        [3, 0],
+        [3, 1],
+        [3, 2],
+        [2, 3],
+        [1, 3],
+        [0, 3],
+      ];
+      const labels = ["3 : 0", "3 : 1", "3 : 2", "2 : 3", "1 : 3", "0 : 3"];
+
+      for (let idx = 0; idx < results.length; idx++) {
+        const [a, b] = results[idx];
+        const newMap = cloneTeamMap(teamMap);
+        record(newMap, s, s2, a, b);
+
+        const nextPossible = possible.slice();
+        nextPossible.push(`${s} ${labels[idx]} ${s2}`);
+
+        dfs(newMap, games, now + 1, nextPossible, find_team, flags, state);
+      }
+    }
+
+    // ===== 按鈕邏輯，含輸入檢查 =====
+    document.getElementById("runBtn").addEventListener("click", () => {
+      const inputEl = document.getElementById("input");
+      const errorEl = document.getElementById("error");
+      const statusEl = document.getElementById("statusText");
+      const btn = document.getElementById("runBtn");
+      const outputEl = document.getElementById("output");
+
+      const input = inputEl.value.trim();
+      const find_team_raw = document.getElementById("team").value.trim();
+      const query = document.getElementById("query").value;
+
+      errorEl.style.display = "none";
+      errorEl.textContent = "";
+      statusEl.textContent = "";
+      outputEl.textContent = "";
+
+      if (!input) {
+        errorEl.textContent = "請先輸入至少一筆對戰資料。";
+        errorEl.style.display = "block";
+        return;
+      }
+
+      const lines = input.split(/\n+/);
+      const teamMap = new Map();
+      const games = [];
+      let lineNo = 0;
+
+      for (const raw of lines) {
+        const line = raw.trim();
+        if (!line) continue;
+        lineNo++;
+        const parts = line.split(/\s+/);
+        if (parts.length < 4) {
+          errorEl.textContent = `第 ${lineNo} 行格式錯誤：至少需要「隊伍A 分數 分數 隊伍B」。`;
+          errorEl.style.display = "block";
+          return;
+        }
+        const s = parts[0];
+        const a = Number(parts[1]);
+        const b = Number(parts[2]);
+        const s2 = parts[3];
+
+        if (!Number.isInteger(a) || !Number.isInteger(b)) {
+          errorEl.textContent = `第 ${lineNo} 行格式錯誤：分數必須是整數，例如「3 1」。`;
+          errorEl.style.display = "block";
+          return;
+        }
+
+        if (a < 0 || b < 0) {
+          errorEl.textContent = `第 ${lineNo} 行格式錯誤：分數不可為負數。`;
+          errorEl.style.display = "block";
+          return;
+        }
+
+        if (a || b) {
+          record(teamMap, s, s2, a, b);
+        } else {
+          games.push([s, s2]);
+        }
+      }
+
+      renderCurrentTable(teamMap);
+
+      const find_team = find_team_raw === "" ? "no" : find_team_raw;
+      const flags = {
+        up4: query === "up4",
+        up2: query === "up2",
+        no_up4: query === "no_up4",
+        no_up2: query === "no_up2",
+      };
+
+      const state = {
+        out: "",
+        check_find_out: false,
+        ans: 0,
+      };
+
+      btn.disabled = true;
+      statusEl.textContent = "計算中，請稍候…";
+
+      setTimeout(() => {
+        dfs(teamMap, games, 0, [], find_team, flags, state);
+
+        // 對應原 C++ 的 final()
+        if (!state.check_find_out && find_team !== "no") {
+          state.out += find_team + " 絕對";
+          if (flags.up2)   state.out += "不會前兩名\n";
+          if (flags.up4)   state.out += "被淘汰\n";
+          if (flags.no_up2) state.out += "晉級季後賽勝部組";
+          if (flags.no_up4) state.out += "晉級季後賽";
+        }
+
+        outputEl.textContent = state.out || "沒有輸出（請確認輸入格式正確或未來比賽場次是否過多）。";
+        statusEl.textContent = `完成！共列出 ${state.ans} 種符合條件的情況。`;
+        btn.disabled = false;
+      }, 0);
+    });
+  </script>
+</body>
+</html>
