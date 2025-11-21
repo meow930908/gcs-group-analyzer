@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <title>傳說對決 GCS 例行賽排名分析 - 小律版</title>
+  <title>傳說對決 GCS 例行賽排名分析 - 小律版（7 隊）</title>
   <style>
     :root {
       --bg: #020617;
@@ -15,11 +15,7 @@
       --text-muted: #9ca3af;
       --danger: #f97373;
     }
-
-    * {
-      box-sizing: border-box;
-    }
-
+    * { box-sizing: border-box; }
     body {
       font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       margin: 0;
@@ -27,47 +23,21 @@
       background: radial-gradient(circle at top, #0b1220 0, #020617 40%, #020617 100%);
       color: var(--text-main);
     }
-
-    .app-shell {
-      max-width: 1100px;
-      margin: 0 auto;
-    }
-
+    .app-shell { max-width: 1100px; margin: 0 auto; }
     .topbar {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 16px;
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;
     }
-
-    .title-main {
-      font-size: 22px;
-      font-weight: 700;
-    }
-
-    .title-sub {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-
+    .title-main { font-size: 22px; font-weight: 700; }
+    .title-sub { font-size: 12px; color: var(--text-muted); }
     .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 3px 10px;
-      border-radius: 999px;
+      display: inline-flex; align-items: center; gap: 6px;
+      padding: 3px 10px; border-radius: 999px;
       border: 1px solid rgba(148,163,184,0.5);
-      font-size: 11px;
-      background: rgba(15,23,42,0.9);
+      font-size: 11px; background: rgba(15,23,42,0.9);
     }
-
     .badge-dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 999px;
-      background: #22c55e;
+      width: 8px; height: 8px; border-radius: 999px; background: #22c55e;
     }
-
     .card {
       background: rgba(2,6,23,0.98);
       border-radius: 16px;
@@ -76,205 +46,82 @@
       border: 1px solid rgba(15,23,42,0.9);
       margin-bottom: 18px;
     }
-
     .card-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 10px;
+      display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 10px;
     }
-
-    h1 {
-      font-size: 18px;
-      margin: 0;
-    }
-
+    h1 { font-size: 18px; margin: 0; }
     label {
-      font-size: 13px;
-      display: block;
-      margin-bottom: 6px;
-      color: var(--text-muted);
+      font-size: 13px; display: block; margin-bottom: 6px; color: var(--text-muted);
     }
-
     textarea {
-      width: 100%;
-      min-height: 180px;
-      background: #020617;
-      color: var(--text-main);
-      border-radius: 10px;
-      border: 1px solid var(--border-subtle);
-      padding: 10px;
-      font-family: "JetBrains Mono", Menlo, Consolas, monospace;
-      font-size: 13px;
-      resize: vertical;
-      outline: none;
+      width: 100%; min-height: 180px; background: #020617; color: var(--text-main);
+      border-radius: 10px; border: 1px solid var(--border-subtle);
+      padding: 10px; font-family: "JetBrains Mono", Menlo, Consolas, monospace;
+      font-size: 13px; resize: vertical; outline: none;
     }
-
     textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px var(--accent-soft);
+      border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-soft);
     }
-
     input, select {
-      width: 100%;
-      background: #020617;
-      color: var(--text-main);
-      border-radius: 999px;
-      border: 1px solid var(--border-subtle);
-      padding: 7px 10px;
-      font-size: 13px;
-      outline: none;
+      width: 100%; background: #020617; color: var(--text-main);
+      border-radius: 999px; border: 1px solid var(--border-subtle);
+      padding: 7px 10px; font-size: 13px; outline: none;
     }
-
-    input::placeholder {
-      color: #6b7280;
-    }
-
+    input::placeholder { color: #6b7280; }
     input:focus, select:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px var(--accent-soft);
+      border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-soft);
     }
-
     .row {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-      margin-bottom: 4px;
+      display: flex; gap: 12px; flex-wrap: wrap; margin-top: 10px; margin-bottom: 4px;
     }
-
-    .row > div {
-      flex: 1;
-      min-width: 160px;
-    }
-
+    .row > div { flex: 1; min-width: 160px; }
     button {
-      margin-top: 10px;
-      padding: 9px 18px;
-      border-radius: 999px;
-      border: none;
-      cursor: pointer;
-      font-size: 14px;
-      font-weight: 600;
-      background: var(--accent);
-      color: white;
-      transition: transform 0.05s ease, box-shadow 0.05s ease, background 0.1s ease;
+      margin-top: 10px; padding: 9px 18px; border-radius: 999px;
+      border: none; cursor: pointer; font-size: 14px; font-weight: 600;
+      background: var(--accent); color: white;
+      transition: transform 0.05s, box-shadow 0.05s, background 0.1s;
     }
-
     button:hover {
-      background: #2563eb;
-      box-shadow: 0 10px 20px rgba(37,99,235,0.35);
+      background: #2563eb; box-shadow: 0 10px 20px rgba(37,99,235,0.35);
       transform: translateY(-1px);
     }
-
-    button:active {
-      transform: translateY(0);
-      box-shadow: none;
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: default;
-      transform: none;
-      box-shadow: none;
-    }
-
-    .hint {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 6px;
-    }
-
-    .error {
-      margin-top: 6px;
-      font-size: 12px;
-      color: var(--danger);
-    }
-
+    button:active { transform: translateY(0); box-shadow: none; }
+    button:disabled { opacity: 0.6; cursor: default; transform: none; box-shadow: none; }
+    .hint { font-size: 11px; color: var(--text-muted); margin-top: 6px; }
+    .error { margin-top: 6px; font-size: 12px; color: var(--danger); }
     .status-bar {
-      font-size: 12px;
-      color: var(--text-muted);
-      margin-top: 6px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      flex-wrap: wrap;
+      font-size: 12px; color: var(--text-muted); margin-top: 6px;
+      display: flex; justify-content: space-between; align-items: center;
+      gap: 8px; flex-wrap: wrap;
     }
-
     pre {
-      background: #020617;
-      border-radius: 10px;
-      border: 1px solid var(--border-subtle);
-      padding: 10px;
-      white-space: pre-wrap;
-      max-height: 420px;
-      overflow: auto;
-      font-family: "JetBrains Mono", Menlo, Consolas, monospace;
-      font-size: 13px;
+      background: #020617; border-radius: 10px; border: 1px solid var(--border-subtle);
+      padding: 10px; white-space: pre-wrap; max-height: 420px; overflow: auto;
+      font-family: "JetBrains Mono", Menlo, Consolas, monospace; font-size: 13px;
       margin-top: 4px;
     }
-
     table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 13px;
-      margin-top: 4px;
-      overflow: hidden;
-      border-radius: 10px;
-      border: 1px solid var(--border-subtle);
+      width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 4px;
+      overflow: hidden; border-radius: 10px; border: 1px solid var(--border-subtle);
       background: #020617;
     }
-
-    thead {
-      background: rgba(15,23,42,0.9);
-    }
-
+    thead { background: rgba(15,23,42,0.9); }
     th, td {
-      padding: 6px 8px;
-      text-align: center;
-      border-bottom: 1px solid #111827;
+      padding: 6px 8px; text-align: center; border-bottom: 1px solid #111827;
     }
-
-    th {
-      font-weight: 600;
-      color: #9ca3af;
-      font-size: 12px;
-    }
-
-    tbody tr:nth-child(even) {
-      background: rgba(15,23,42,0.55);
-    }
-
-    tbody tr:hover {
-      background: rgba(31,41,55,0.8);
-    }
-
-    .team-name-cell {
-      text-align: left;
-      padding-left: 12px;
-    }
-
+    th { font-weight: 600; color: #9ca3af; font-size: 12px; }
+    tbody tr:nth-child(even) { background: rgba(15,23,42,0.55); }
+    tbody tr:hover { background: rgba(31,41,55,0.8); }
+    .team-name-cell { text-align: left; padding-left: 12px; }
     .tag {
-      display: inline-flex;
-      padding: 2px 7px;
-      border-radius: 999px;
-      font-size: 11px;
-      border: 1px solid #374151;
-      color: #9ca3af;
+      display: inline-flex; padding: 2px 7px; border-radius: 999px;
+      font-size: 11px; border: 1px solid #374151; color: #9ca3af;
       background: rgba(17,24,39,0.9);
     }
-
     @media (max-width: 640px) {
-      body {
-        padding: 14px;
-      }
-      .card {
-        padding: 14px;
-      }
-      .title-main {
-        font-size: 18px;
-      }
+      body { padding: 14px; }
+      .card { padding: 14px; }
+      .title-main { font-size: 18px; }
     }
   </style>
 </head>
@@ -282,8 +129,8 @@
   <div class="app-shell">
     <div class="topbar">
       <div>
-        <div class="title-main">傳說對決 GCS 例行賽排名分析程式</div>
-        <div class="title-sub">By 小律・完整枚舉所有未來賽果（BO5）</div>
+        <div class="title-main">傳說對決 GCS 例行賽排名分析程式（7 隊版）</div>
+        <div class="title-sub">By 小律・完整枚舉所有未來賽果（BO5 3:0～0:3）</div>
       </div>
       <div class="badge">
         <div class="badge-dot"></div>
@@ -354,9 +201,7 @@ DCG 0 0 ONE
             <th>勝差</th>
           </tr>
         </thead>
-        <tbody id="rankTableBody">
-          <!-- JS 產生 -->
-        </tbody>
+        <tbody id="rankTableBody"></tbody>
       </table>
       <div class="hint">請輸入上方對戰結果並按「開始計算」，這裡會顯示目前已完成比賽的排名。</div>
     </div>
@@ -372,11 +217,11 @@ DCG 0 0 ONE
   </div>
 
   <script>
-    // ===== 資料結構 =====
+    // ===== 資料結構（對應 C++ struct ST） =====
     class ST {
       constructor(name) {
         this.my_team = name;
-        this.mp = {};
+        this.mp = {};          // 對戰小分紀錄
         this.big_win = 0;
         this.big_lose = 0;
         this.small_win = 0;
@@ -398,6 +243,7 @@ DCG 0 0 ONE
       return newMap;
     }
 
+    // 對應 C++ 的 record()
     function record(teamMap, s, s2, a, b) {
       if (!teamMap.has(s)) teamMap.set(s, new ST(s));
       if (!teamMap.has(s2)) teamMap.set(s2, new ST(s2));
@@ -426,6 +272,7 @@ DCG 0 0 ONE
       }
     }
 
+    // 對應 C++ 的 cmp()
     function cmp(a, b) {
       if (a.big_win !== b.big_win) return b.big_win - a.big_win;
       if (a.dif     !== b.dif)     return b.dif - a.dif;
@@ -437,7 +284,7 @@ DCG 0 0 ONE
       return a.my_team.localeCompare(b.my_team);
     }
 
-    // 計算完整排名資訊
+    // 產生排序後的隊伍陣列，算出 rank（對應 print 裡的排名邏輯）
     function buildRankList(teamMap) {
       let v = Array.from(teamMap.values()).map(t => {
         const nt = new ST(t.my_team);
@@ -474,7 +321,7 @@ DCG 0 0 ONE
       return v;
     }
 
-    // 更新「目前排名表」
+    // 更新上面的「目前排名表」
     function renderCurrentTable(teamMap) {
       const tbody = document.getElementById("rankTableBody");
       tbody.innerHTML = "";
@@ -483,35 +330,19 @@ DCG 0 0 ONE
       const v = buildRankList(teamMap);
       for (const row of v) {
         const tr = document.createElement("tr");
-
-        const rankTd = document.createElement("td");
-        rankTd.textContent = row.rank;
-
-        const nameTd = document.createElement("td");
-        nameTd.textContent = row.my_team;
-        nameTd.className = "team-name-cell";
-
-        const bwTd = document.createElement("td");
-        bwTd.textContent = row.big_win;
-
-        const blTd = document.createElement("td");
-        blTd.textContent = row.big_lose;
-
-        const swTd = document.createElement("td");
-        swTd.textContent = row.small_win;
-
-        const slTd = document.createElement("td");
-        slTd.textContent = row.small_lose;
-
-        const difTd = document.createElement("td");
-        difTd.textContent = row.dif;
-
+        const rankTd = document.createElement("td"); rankTd.textContent = row.rank;
+        const nameTd = document.createElement("td"); nameTd.textContent = row.my_team; nameTd.className = "team-name-cell";
+        const bwTd = document.createElement("td"); bwTd.textContent = row.big_win;
+        const blTd = document.createElement("td"); blTd.textContent = row.big_lose;
+        const swTd = document.createElement("td"); swTd.textContent = row.small_win;
+        const slTd = document.createElement("td"); slTd.textContent = row.small_lose;
+        const difTd = document.createElement("td"); difTd.textContent = row.dif;
         tr.append(rankTd, nameTd, bwTd, blTd, swTd, slTd, difTd);
         tbody.appendChild(tr);
       }
     }
 
-    // 根據查詢條件決定是否印出這一種情境
+    // 對應 C++ 的 print()，多一個 flags 物件
     function print(teamMap, possible, find_team, flags, state) {
       const { up2, up4, no_up4, no_up2 } = flags;
       const v = buildRankList(teamMap);
@@ -519,55 +350,29 @@ DCG 0 0 ONE
       let go_to_print = false;
       if (find_team === "no" || !find_team) go_to_print = true;
 
-      if (up2) {
-        for (const i of v) {
-          if (i.my_team === find_team && i.rank <= 2) go_to_print = true;
-        }
-      }
-      if (up4) {
-        for (const i of v) {
-          if (i.my_team === find_team && i.rank <= 4) go_to_print = true;
-        }
-      }
-      if (no_up4) {
-        for (const i of v) {
-          if (i.my_team === find_team && i.rank >= 5) go_to_print = true;
-        }
-      }
-      if (no_up2) {
-        for (const i of v) {
-          if (i.my_team === find_team && i.rank >= 3) go_to_print = true;
-        }
-      }
+      if (up2)  for (const i of v) if (i.my_team === find_team && i.rank <= 2) go_to_print = true;
+      if (up4)  for (const i of v) if (i.my_team === find_team && i.rank <= 4) go_to_print = true;
+      if (no_up4) for (const i of v) if (i.my_team === find_team && i.rank >= 5) go_to_print = true;
+      if (no_up2) for (const i of v) if (i.my_team === find_team && i.rank >= 3) go_to_print = true;
 
-      // GCS 原程式：4 / 2 名邊界平手也算「可能」
+      // 邊界平手情況也算進「可能」
       if (no_up4) {
-        for (let i = 0; i < v.length; i++) {
-          if (v[i].my_team === find_team && i !== v.length - 1 &&
-              v[i].rank === 4 && v[i+1].rank === 4) go_to_print = true;
-        }
-        for (let i = 1; i < v.length; i++) {
-          if (v[i].my_team === find_team &&
-              v[i].rank === 4 && v[i-1].rank === 4) go_to_print = true;
-        }
+        for (let i = 0; i < v.length; i++)
+          if (v[i].my_team === find_team && i !== v.length-1 && v[i].rank===4 && v[i+1].rank===4) go_to_print = true;
+        for (let i = 1; i < v.length; i++)
+          if (v[i].my_team === find_team && v[i].rank===4 && v[i-1].rank===4) go_to_print = true;
       }
       if (no_up2) {
-        for (let i = 0; i < v.length; i++) {
-          if (v[i].my_team === find_team && i !== v.length - 1 &&
-              v[i].rank === 2 && v[i+1].rank === 2) go_to_print = true;
-        }
-        for (let i = 1; i < v.length; i++) {
-          if (v[i].my_team === find_team &&
-              v[i].rank === 2 && v[i-1].rank === 2) go_to_print = true;
-        }
+        for (let i = 0; i < v.length; i++)
+          if (v[i].my_team === find_team && i !== v.length-1 && v[i].rank===2 && v[i+1].rank===2) go_to_print = true;
+        for (let i = 1; i < v.length; i++)
+          if (v[i].my_team === find_team && v[i].rank===2 && v[i-1].rank===2) go_to_print = true;
       }
 
       if (go_to_print) {
         state.check_find_out = true;
         state.ans++;
-        if (possible.length > 0) {
-          state.out += possible.join("\n") + "\n";
-        }
+        if (possible.length > 0) state.out += possible.join("\n") + "\n";
         state.out += "排名 隊伍 大分 敗 小分 敗 勝差\n";
         for (const i of v) {
           state.out += `${i.rank} ${i.my_team} ${i.big_win} ${i.big_lose} ${i.small_win} ${i.small_lose} ${i.dif}\n`;
@@ -576,33 +381,23 @@ DCG 0 0 ONE
       }
     }
 
-    // DFS 枚舉每一場比賽的 6 種結果
+    // 對應 C++ 的 dfs()：每場 6 種結果
     function dfs(teamMap, games, now, possible, find_team, flags, state) {
       if (now === games.length) {
         print(teamMap, possible, find_team, flags, state);
         return;
       }
-
       const [s, s2] = games[now];
-      const results = [
-        [3, 0],
-        [3, 1],
-        [3, 2],
-        [2, 3],
-        [1, 3],
-        [0, 3],
-      ];
-      const labels = ["3 : 0", "3 : 1", "3 : 2", "2 : 3", "1 : 3", "0 : 3"];
+      const results = [[3,0],[3,1],[3,2],[2,3],[1,3],[0,3]];
+      const labels  = ["3 : 0","3 : 1","3 : 2","2 : 3","1 : 3","0 : 3"];
 
       for (let idx = 0; idx < results.length; idx++) {
         const [a, b] = results[idx];
         const newMap = cloneTeamMap(teamMap);
         record(newMap, s, s2, a, b);
-
         const nextPossible = possible.slice();
         nextPossible.push(`${s} ${labels[idx]} ${s2}`);
-
-        dfs(newMap, games, now + 1, nextPossible, find_team, flags, state);
+        dfs(newMap, games, now+1, nextPossible, find_team, flags, state);
       }
     }
 
@@ -654,35 +449,27 @@ DCG 0 0 ONE
           errorEl.style.display = "block";
           return;
         }
-
         if (a < 0 || b < 0) {
           errorEl.textContent = `第 ${lineNo} 行格式錯誤：分數不可為負數。`;
           errorEl.style.display = "block";
           return;
         }
 
-        if (a || b) {
-          record(teamMap, s, s2, a, b);
-        } else {
-          games.push([s, s2]);
-        }
+        if (a || b) record(teamMap, s, s2, a, b);
+        else        games.push([s, s2]);
       }
 
       renderCurrentTable(teamMap);
 
       const find_team = find_team_raw === "" ? "no" : find_team_raw;
       const flags = {
-        up4: query === "up4",
-        up2: query === "up2",
+        up4:    query === "up4",
+        up2:    query === "up2",
         no_up4: query === "no_up4",
         no_up2: query === "no_up2",
       };
 
-      const state = {
-        out: "",
-        check_find_out: false,
-        ans: 0,
-      };
+      const state = { out: "", check_find_out: false, ans: 0 };
 
       btn.disabled = true;
       statusEl.textContent = "計算中，請稍候…";
@@ -690,11 +477,11 @@ DCG 0 0 ONE
       setTimeout(() => {
         dfs(teamMap, games, 0, [], find_team, flags, state);
 
-        // 對應原 C++ 的 final()
+        // 對應 C++ 的 final()
         if (!state.check_find_out && find_team !== "no") {
           state.out += find_team + " 絕對";
-          if (flags.up2)   state.out += "不會前兩名\n";
-          if (flags.up4)   state.out += "被淘汰\n";
+          if (flags.up2)    state.out += "不會前兩名\n";
+          if (flags.up4)    state.out += "被淘汰\n";
           if (flags.no_up2) state.out += "晉級季後賽勝部組";
           if (flags.no_up4) state.out += "晉級季後賽";
         }
