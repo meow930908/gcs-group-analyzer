@@ -1,5 +1,7 @@
 # gcs-group-analyzer
 
+網址：https://meow930908.github.io/gcs-group-analyzer/
+
 傳說對決 GCS 例行賽排名分析程式 - By 小律（2025/11/21)
 能完整分析未來所有比賽結果
 1. 大分較多的隊伍 排名較前
