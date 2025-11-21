@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
   <meta charset="UTF-8" />
-  <title>傳說對決 GCS 例行賽排名分析 - 小律版（7 隊）</title>
+  <title>傳說對決 GCS 例行賽排名分析</title>
   <style>
     :root {
       --bg: #020617;
@@ -29,15 +29,37 @@
     }
     .title-main { font-size: 22px; font-weight: 700; }
     .title-sub { font-size: 12px; color: var(--text-muted); }
-    .badge {
-      display: inline-flex; align-items: center; gap: 6px;
-      padding: 3px 10px; border-radius: 999px;
+
+    .mode-switch {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+    .mode-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 2px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
       border: 1px solid rgba(148,163,184,0.5);
-      font-size: 11px; background: rgba(15,23,42,0.9);
+      font-size: 11px;
     }
-    .badge-dot {
-      width: 8px; height: 8px; border-radius: 999px; background: #22c55e;
+    .mode-pill span {
+      padding: 3px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
     }
+    .mode-pill span.active {
+      background: var(--accent);
+      color: #fff;
+    }
+    .mode-pill span.inactive {
+      color: var(--text-muted);
+    }
+
     .card {
       background: rgba(2,6,23,0.98);
       border-radius: 16px;
@@ -129,16 +151,19 @@
   <div class="app-shell">
     <div class="topbar">
       <div>
-        <div class="title-main">傳說對決 GCS 例行賽排名分析程式（7 隊版）</div>
-        <div class="title-sub">By 小律・完整枚舉所有未來賽果（BO5 3:0～0:3）</div>
+        <div class="title-main">傳說對決 GCS 例行賽排名分析程式（完整版）</div>
+        <div class="title-sub">完整枚舉所有未來賽果（BO5）By 小律 (2025/11/21 11:06) </div>
       </div>
-      <div class="badge">
-        <div class="badge-dot"></div>
-        <span>GCS 2025 Season Analyzer</span>
+
+      <div class="mode-switch">
+        <div class="mode-pill">
+          <span class="active">完整版</span>
+          <span class="inactive" onclick="location.href='simple.html'">簡易版</span>
+        </div>
       </div>
     </div>
 
-    <!-- 輸入區 -->
+    <!-- 輸入區：跟前面完整版相同 -->
     <div class="card">
       <div class="card-header">
         <h1>資料輸入</h1>
@@ -147,12 +172,12 @@
 
       <div class="hint">
         輸入格式：<br/>
-        已對戰：<code>HKA 3 1 BRO</code>　未對戰：<code>HKA 0 0 BRO</code>
+        已對戰：<code>HKA 3 1 BMG </code>　未對戰：<code>HKA 0 0 DCG</code>
       </div>
 
       <label for="input">請輸入目前例行賽所有對戰結果（每行一筆）：</label>
       <textarea id="input" placeholder="例如：
-HKA 3 1 BRO
+FW 3 1 HKA
 DCG 0 0 ONE
 ..."></textarea>
 
@@ -175,7 +200,7 @@ DCG 0 0 ONE
         </div>
       </div>
 
-      <button id="runBtn">開始計算</button>
+      <button id="runBtn">開始計算（完整版）</button>
 
       <div class="status-bar">
         <span>小提醒：未來 N 場比賽共有 6<sup>N</sup> 種可能，場次太多時結果會非常龐大。</span>
@@ -217,11 +242,10 @@ DCG 0 0 ONE
   </div>
 
   <script>
-    // ===== 資料結構（對應 C++ struct ST） =====
     class ST {
       constructor(name) {
         this.my_team = name;
-        this.mp = {};          // 對戰小分紀錄
+        this.mp = {};
         this.big_win = 0;
         this.big_lose = 0;
         this.small_win = 0;
@@ -243,7 +267,6 @@ DCG 0 0 ONE
       return newMap;
     }
 
-    // 對應 C++ 的 record()
     function record(teamMap, s, s2, a, b) {
       if (!teamMap.has(s)) teamMap.set(s, new ST(s));
       if (!teamMap.has(s2)) teamMap.set(s2, new ST(s2));
@@ -272,19 +295,15 @@ DCG 0 0 ONE
       }
     }
 
-    // 對應 C++ 的 cmp()
     function cmp(a, b) {
       if (a.big_win !== b.big_win) return b.big_win - a.big_win;
       if (a.dif     !== b.dif)     return b.dif - a.dif;
-
       const ab = a.mp[b.my_team] || 0;
       const ba = b.mp[a.my_team] || 0;
       if (ab !== ba) return ba - ab;
-
       return a.my_team.localeCompare(b.my_team);
     }
 
-    // 產生排序後的隊伍陣列，算出 rank（對應 print 裡的排名邏輯）
     function buildRankList(teamMap) {
       let v = Array.from(teamMap.values()).map(t => {
         const nt = new ST(t.my_team);
@@ -321,7 +340,6 @@ DCG 0 0 ONE
       return v;
     }
 
-    // 更新上面的「目前排名表」
     function renderCurrentTable(teamMap) {
       const tbody = document.getElementById("rankTableBody");
       tbody.innerHTML = "";
@@ -342,7 +360,6 @@ DCG 0 0 ONE
       }
     }
 
-    // 對應 C++ 的 print()，多一個 flags 物件
     function print(teamMap, possible, find_team, flags, state) {
       const { up2, up4, no_up4, no_up2 } = flags;
       const v = buildRankList(teamMap);
@@ -355,7 +372,6 @@ DCG 0 0 ONE
       if (no_up4) for (const i of v) if (i.my_team === find_team && i.rank >= 5) go_to_print = true;
       if (no_up2) for (const i of v) if (i.my_team === find_team && i.rank >= 3) go_to_print = true;
 
-      // 邊界平手情況也算進「可能」
       if (no_up4) {
         for (let i = 0; i < v.length; i++)
           if (v[i].my_team === find_team && i !== v.length-1 && v[i].rank===4 && v[i+1].rank===4) go_to_print = true;
@@ -381,7 +397,6 @@ DCG 0 0 ONE
       }
     }
 
-    // 對應 C++ 的 dfs()：每場 6 種結果
     function dfs(teamMap, games, now, possible, find_team, flags, state) {
       if (now === games.length) {
         print(teamMap, possible, find_team, flags, state);
@@ -401,7 +416,6 @@ DCG 0 0 ONE
       }
     }
 
-    // ===== 按鈕邏輯，含輸入檢查 =====
     document.getElementById("runBtn").addEventListener("click", () => {
       const inputEl = document.getElementById("input");
       const errorEl = document.getElementById("error");
@@ -477,7 +491,6 @@ DCG 0 0 ONE
       setTimeout(() => {
         dfs(teamMap, games, 0, [], find_team, flags, state);
 
-        // 對應 C++ 的 final()
         if (!state.check_find_out && find_team !== "no") {
           state.out += find_team + " 絕對";
           if (flags.up2)    state.out += "不會前兩名\n";
